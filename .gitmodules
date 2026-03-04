@@ -1,0 +1,3 @@
+[submodule "PaPILO_Presolve_jll"]
+	path = PaPILO_Presolve_jll
+	url = https://github.com/klamike/PaPILO_Presolve_jll.git
