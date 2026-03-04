@@ -153,4 +153,12 @@ function postsolve(r::Result, reduced::Vector{Float64})
     return original
 end
 
+function map_primal(r::Result, x_orig::Vector{Float64})
+    x_red = Vector{Float64}(undef, num_cols(r))
+    ccall((:papilo_map_primal, libpapilo_presolve), Cvoid,
+          (Ptr{Cvoid}, Ptr{Cdouble}, Ptr{Cdouble}),
+          r._ptr, x_orig, x_red)
+    return x_red
+end
+
 end  # module API
