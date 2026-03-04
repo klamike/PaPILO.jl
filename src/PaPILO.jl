@@ -15,6 +15,9 @@
 module PaPILO
 
 import SCIP_PaPILO_jll
+import PaPILO_Presolve_jll
+
+include("papilo_api.jl")
 
 """
     presolve_write_from_file(problem_input::String, problem_postsolve::String, reduced_problem::String)
