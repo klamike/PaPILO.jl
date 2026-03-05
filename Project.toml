@@ -9,7 +9,7 @@ PaPILO_Presolve_jll = "ac3407f7-d818-4657-ac2d-3679289da1ef"
 SCIP_PaPILO_jll = "fc9abe76-a5e6-5fed-b0b7-a12f309cf031"
 
 [sources]
-PaPILO_Presolve_jll = {path = "PaPILO_Presolve_jll"}
+PaPILO_Presolve_jll = {url = "https://github.com/klamike/PaPILO.jl", subdir = "PaPILO_Presolve_jll"}
 
 [compat]
 MathOptInterface = "1.46.0"

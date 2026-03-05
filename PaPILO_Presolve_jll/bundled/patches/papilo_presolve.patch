@@ -1,0 +1,69 @@
+diff --git a/.gitignore b/.gitignore
+index 7e1e888b..8cb832e3 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,3 +1,4 @@
++/test_*
+ # Prerequisites
+ *.d
+ 
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 5a201f35..75c58c42 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -365,6 +365,28 @@ endif()
+ target_link_libraries(papilo-core papilo)
+ target_compile_definitions(papilo-core PRIVATE PAPILO_USE_EXTERN_TEMPLATES)
+ 
++# papilo-presolve C API
++include(GenerateExportHeader)
++
++add_library(papilo-presolve SHARED src/papilo_presolve.cpp)
++
++generate_export_header(papilo-presolve
++    BASE_NAME PAPILO_PRESOLVE
++    EXPORT_FILE_NAME papilo_presolve_export.h)
++
++target_link_libraries(papilo-presolve PRIVATE papilo-core papilo)
++target_compile_definitions(papilo-presolve PRIVATE PAPILO_USE_EXTERN_TEMPLATES)
++target_include_directories(papilo-presolve PUBLIC
++    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
++    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
++    $<INSTALL_INTERFACE:include>)
++
++if(MSVC)
++    setLibProperties(papilo-presolve "libpapilo-presolve")
++else()
++    setLibProperties(papilo-presolve "papilo-presolve")
++endif()
++
+ # When including from scipoptsuite, this is set to postpone generation of binaries until SCIP is built.
+ if(NOT PAPILO_NO_BINARIES)
+    add_subdirectory(binaries)
+@@ -593,7 +615,7 @@ if(INSTALL_TBB AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
+ endif()
+ 
+ # Export targets for the build-tree.
+-export(TARGETS papilo papilo-core ${CLUSOL_TARGET} FILE "${CMAKE_BINARY_DIR}/papilo-targets.cmake")
++export(TARGETS papilo papilo-core papilo-presolve ${CLUSOL_TARGET} FILE "${CMAKE_BINARY_DIR}/papilo-targets.cmake")
+ 
+ # Install the dependencies.
+ if(EXISTS ${CMAKE_BINARY_DIR}/_deps)
+@@ -601,7 +623,16 @@ if(EXISTS ${CMAKE_BINARY_DIR}/_deps)
+ endif()
+ 
+ # Install targets.
+-install(TARGETS papilo papilo-core ${CLUSOL_TARGET} EXPORT papilo-targets ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
++install(TARGETS papilo papilo-core papilo-presolve ${CLUSOL_TARGET} EXPORT papilo-targets
++   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
++   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
++   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
++
++# Install presolve API headers.
++install(FILES
++   ${PROJECT_SOURCE_DIR}/src/papilo_presolve.h
++   ${PROJECT_BINARY_DIR}/papilo_presolve_export.h
++   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+ 
+ # Install the papilo-targets.
+ install(EXPORT papilo-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/papilo)

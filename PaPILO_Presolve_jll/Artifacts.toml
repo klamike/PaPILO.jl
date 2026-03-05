@@ -1,0 +1,73 @@
+[[PaPILO_Presolve]]
+arch = "aarch64"
+cxxstring_abi = "cxx11"
+git-tree-sha1 = "8f22ee2d84aad3e9c9096d5a67e24ddd6693167f"
+libc = "glibc"
+libgfortran_version = "5.0.0"
+os = "linux"
+
+    [[PaPILO_Presolve.download]]
+    sha256 = "89f7636356eb3b40c2d6a4699d7e712e8455d7555f3abfb869c8efa16f37feee"
+    url = "file:///Users/mklamkin3/Git/CoolPDLP/PaPILO.jl/PaPILO_Presolve_jll/products/PaPILO_Presolve.v3.0.0.aarch64-linux-gnu-libgfortran5-cxx11.tar.gz"
+[[PaPILO_Presolve]]
+arch = "aarch64"
+cxxstring_abi = "cxx11"
+git-tree-sha1 = "bea590ed5fe83dd2b77dd17bfa8eee5b4cb47991"
+libc = "musl"
+libgfortran_version = "5.0.0"
+os = "linux"
+
+    [[PaPILO_Presolve.download]]
+    sha256 = "6b17c285eecb66414a5a694abe9874286e5d2553dd0689db5169ecf42719df5b"
+    url = "file:///Users/mklamkin3/Git/CoolPDLP/PaPILO.jl/PaPILO_Presolve_jll/products/PaPILO_Presolve.v3.0.0.aarch64-linux-musl-libgfortran5-cxx11.tar.gz"
+[[PaPILO_Presolve]]
+arch = "powerpc64le"
+cxxstring_abi = "cxx11"
+git-tree-sha1 = "7e9f955b28e71b5ffec51e94bb62dd4d67a84b4b"
+libc = "glibc"
+libgfortran_version = "5.0.0"
+os = "linux"
+
+    [[PaPILO_Presolve.download]]
+    sha256 = "a3e2f568e68e4d5070efc458abd7b3cff63868c7eeaa1b7375a53ee362a09afa"
+    url = "file:///Users/mklamkin3/Git/CoolPDLP/PaPILO.jl/PaPILO_Presolve_jll/products/PaPILO_Presolve.v3.0.0.powerpc64le-linux-gnu-libgfortran5-cxx11.tar.gz"
+[[PaPILO_Presolve]]
+arch = "x86_64"
+git-tree-sha1 = "73b19a31cc4089c0ccc9f9444c5de308703884de"
+libgfortran_version = "5.0.0"
+os = "macos"
+
+    [[PaPILO_Presolve.download]]
+    sha256 = "e3c99d8b950178a36ae91b6a72a51cac158c42ee5e229f70a3155128fe03b3cd"
+    url = "file:///Users/mklamkin3/Git/CoolPDLP/PaPILO.jl/PaPILO_Presolve_jll/products/PaPILO_Presolve.v3.0.0.x86_64-apple-darwin-libgfortran5.tar.gz"
+[[PaPILO_Presolve]]
+arch = "x86_64"
+cxxstring_abi = "cxx11"
+git-tree-sha1 = "a730a2ba779db32092458f4a1b0363bb03bf40f4"
+libc = "glibc"
+libgfortran_version = "5.0.0"
+os = "linux"
+
+    [[PaPILO_Presolve.download]]
+    sha256 = "1cf741dd15335cb99a570b9732a15a153095d357726d479592653f1db9047574"
+    url = "file:///Users/mklamkin3/Git/CoolPDLP/PaPILO.jl/PaPILO_Presolve_jll/products/PaPILO_Presolve.v3.0.0.x86_64-linux-gnu-libgfortran5-cxx11.tar.gz"
+[[PaPILO_Presolve]]
+arch = "x86_64"
+cxxstring_abi = "cxx11"
+git-tree-sha1 = "34fbb2865d3156416153355fb6816a17739c0244"
+libc = "musl"
+libgfortran_version = "5.0.0"
+os = "linux"
+
+    [[PaPILO_Presolve.download]]
+    sha256 = "5fcd5733f2ff42f4dfe2ffa3eaedc3c6388ad40dda392df1e39a958cdfda441f"
+    url = "file:///Users/mklamkin3/Git/CoolPDLP/PaPILO.jl/PaPILO_Presolve_jll/products/PaPILO_Presolve.v3.0.0.x86_64-linux-musl-libgfortran5-cxx11.tar.gz"
+[[PaPILO_Presolve]]
+arch = "aarch64"
+git-tree-sha1 = "e3c14f5f9ed7b93391679b74addf86b3511c1ec3"
+libgfortran_version = "5.0.0"
+os = "macos"
+
+    [[PaPILO_Presolve.download]]
+    sha256 = "787d44db1493b16fe8c56703fd5ed2c0dbf9ad4af34998559914a21045a9ed6e"
+    url = "file:///Users/mklamkin3/Git/CoolPDLP/PaPILO.jl/PaPILO_Presolve_jll/products/PaPILO_Presolve.v3.1.0.aarch64-apple-darwin-libgfortran5.tar.gz"
