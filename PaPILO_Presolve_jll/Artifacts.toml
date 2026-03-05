@@ -71,3 +71,20 @@ os = "macos"
     [[PaPILO_Presolve.download]]
     sha256 = "787d44db1493b16fe8c56703fd5ed2c0dbf9ad4af34998559914a21045a9ed6e"
     url = "file:///Users/mklamkin3/Git/CoolPDLP/PaPILO.jl/PaPILO_Presolve_jll/products/PaPILO_Presolve.v3.1.0.aarch64-apple-darwin-libgfortran5.tar.gz"
+[[PaPILO_Presolve]]
+arch = "aarch64"
+git-tree-sha1 = "efff5ce173c5329780ad7d20aa0a54af7a4eb9ad"
+os = "macos"
+
+    [[PaPILO_Presolve.download]]
+    sha256 = "cae2286cc22bb714c6c07b5f5c39766c344f97037c660b2b9e6e04515b1c08a4"
+    url = "https://github.com/klamike/PaPILO.jl/releases/download/PaPILO_Presolve-v3.1.0/PaPILO_Presolve.v3.1.0.aarch64-apple-darwin.tar.gz"
+[[PaPILO_Presolve]]
+arch = "x86_64"
+git-tree-sha1 = "5e76c8a1cfa4e52d0d1cd6a3a4d08c539677fb7f"
+libc = "glibc"
+os = "linux"
+
+    [[PaPILO_Presolve.download]]
+    sha256 = "01512aa6559b8b386e2dfd5f413a06bc01904c3f66a19f7c03b405f81951de5b"
+    url = "https://github.com/klamike/PaPILO.jl/releases/download/PaPILO_Presolve-v3.1.0/PaPILO_Presolve.v3.1.0.x86_64-linux-gnu.tar.gz"
