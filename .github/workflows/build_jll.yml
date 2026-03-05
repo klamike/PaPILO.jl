@@ -1,0 +1,150 @@
+name: Build PaPILO_Presolve_jll
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'JLL version to release (e.g. 3.1.0)'
+        required: true
+        default: '3.1.0'
+
+permissions:
+  contents: write
+
+# ── Build one tarball per native platform ─────────────────────────────────────
+jobs:
+  build:
+    name: Build / ${{ matrix.platform }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            platform: x86_64-linux-gnu
+          - runner: macos-14
+            platform: aarch64-apple-darwin
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install deps (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y cmake \
+            libtbb-dev libgmp-dev \
+            libboost-iostreams-dev libboost-random-dev libboost-regex-dev \
+            libboost-serialization-dev libboost-program-options-dev \
+            libboost-container-dev
+
+      - name: Install deps (macOS)
+        if: runner.os == 'macOS'
+        run: brew install cmake tbb gmp boost
+
+      - name: Clone PaPILO
+        run: |
+          git clone https://github.com/scipopt/papilo.git
+          git -C papilo checkout 4cbdc3270e5f454c0b6ce81454d7ee5acefa7777
+
+      - name: Inject wrapper sources and apply patch
+        run: |
+          cp PaPILO_Presolve_jll/bundled/src/papilo_presolve.h  papilo/src/
+          cp PaPILO_Presolve_jll/bundled/src/papilo_presolve.cpp papilo/src/
+          git -C papilo apply "$GITHUB_WORKSPACE/PaPILO_Presolve_jll/bundled/patches/papilo_presolve.patch"
+
+      - name: Configure and build (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          cmake -S papilo -B papilo/build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTING=OFF \
+            -DPAPILO_NO_BINARIES=ON \
+            -DTBB=ON \
+            -DGMP=ON
+          cmake --build papilo/build --target papilo-presolve -j$(nproc)
+
+      - name: Configure and build (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          cmake -S papilo -B papilo/build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTING=OFF \
+            -DPAPILO_NO_BINARIES=ON \
+            -DTBB=ON \
+            -DTBB_DIR="$(brew --prefix tbb)/lib/cmake/TBB" \
+            -DGMP=ON \
+            -DCMAKE_PREFIX_PATH="$(brew --prefix)"
+          cmake --build papilo/build --target papilo-presolve \
+            -j$(sysctl -n hw.logicalcpu)
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1'
+
+      - name: Package artifact
+        env:
+          VERSION:       ${{ inputs.version }}
+          PLATFORM:      ${{ matrix.platform }}
+          ARTIFACT_NAME: PaPILO_Presolve
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            export BUILT_LIB="$GITHUB_WORKSPACE/papilo/build/libpapilo-presolve.dylib"
+          else
+            export BUILT_LIB="$GITHUB_WORKSPACE/papilo/build/libpapilo-presolve.so"
+          fi
+          julia PaPILO_Presolve_jll/ci_package.jl
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tarball-${{ matrix.platform }}
+          path: |
+            PaPILO_Presolve.v*.tar.gz
+            artifact_meta_*.txt
+
+# ── Create the release and update Artifacts.toml ──────────────────────────────
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Need a token with push access so the commit at the end goes through
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: tarball-*
+          merge-multiple: true
+
+      - name: Create GitHub release and upload tarballs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ inputs.version }}"
+          TAG="PaPILO_Presolve-v${VERSION}"
+          gh release create "$TAG" \
+            --title "PaPILO_Presolve_jll v${VERSION}" \
+            --notes "Automated native build of PaPILO_Presolve_jll v${VERSION}." \
+            PaPILO_Presolve.v*.tar.gz
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1'
+
+      - name: Update Artifacts.toml
+        env:
+          REPO:          ${{ github.repository }}
+          TAG:           PaPILO_Presolve-v${{ inputs.version }}
+          ARTIFACT_NAME: PaPILO_Presolve
+          ARTIFACTS_TOML: ${{ github.workspace }}/PaPILO_Presolve_jll/Artifacts.toml
+        run: julia PaPILO_Presolve_jll/ci_bind.jl
+
+      - name: Commit updated Artifacts.toml
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add PaPILO_Presolve_jll/Artifacts.toml
+          git commit -m "JLL: update Artifacts.toml for PaPILO_Presolve v${{ inputs.version }}"
+          git push
